@@ -17,13 +17,15 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
+  <meta name="description" content="不当咸鱼，不吃软饭，但希望有一个愿意开滴滴养我的npy。">
+<meta property="og:type" content="website">
 <meta property="og:title" content="小陈不喝酒">
 <meta property="og:url" content="http://example.com/index.html">
 <meta property="og:site_name" content="小陈不喝酒">
+<meta property="og:description" content="不当咸鱼，不吃软饭，但希望有一个愿意开滴滴养我的npy。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="Jet Chen">
 <meta name="twitter:card" content="summary">
@@ -95,6 +97,7 @@
       <h1 class="site-title">小陈不喝酒</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
+      <p class="site-subtitle" itemprop="description">争做新青年，不做lsp！</p>
   </div>
 
   <div class="site-nav-right">
@@ -160,7 +163,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/touxiang.png">
       <meta itemprop="name" content="Jet Chen">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content="不当咸鱼，不吃软饭，但希望有一个愿意开滴滴养我的npy。">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -180,6 +183,26 @@
               <span class="post-meta-item-text">发表于</span>
 
               <time title="创建时间：2021-06-16 14:58:57" itemprop="dateCreated datePublished" datetime="2021-06-16T14:58:57+08:00">2021-06-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-06-17 00:02:47" itemprop="dateModified" datetime="2021-06-17T00:02:47+08:00">2021-06-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/first/" itemprop="url" rel="index"><span itemprop="name">first</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/first/second/" itemprop="url" rel="index"><span itemprop="name">second</span></a>
+                </span>
             </span>
 
           
@@ -282,7 +305,7 @@
     <img class="site-author-image" itemprop="image" alt="Jet Chen"
       src="/images/touxiang.png">
   <p class="site-author-name" itemprop="name">Jet Chen</p>
-  <div class="site-description" itemprop="description"></div>
+  <div class="site-description" itemprop="description">不当咸鱼，不吃软饭，但希望有一个愿意开滴滴养我的npy。</div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
@@ -292,6 +315,12 @@
           <span class="site-state-item-count">1</span>
           <span class="site-state-item-name">日志</span>
         </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
 </div>
@@ -323,8 +352,6 @@
   </span>
   <span class="author" itemprop="copyrightHolder">Jet Chen</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
-  </div>
 
         
 
