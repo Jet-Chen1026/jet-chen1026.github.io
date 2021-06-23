@@ -10,8 +10,8 @@ const ap = new APlayer({
         {
             name: 'The truth that you leave',
         	artist: 'piano boy',
-        	url: 'http://bd.kuwo.cn/play_detail/57755407',
+        	url: 'http://www.ytmp3.cn/down/58893.mp3',
         	cover: 'http://p1.music.126.net/y_m2FXuYNBxITD4D80Aq2w==/1372190524437978.jpg'
-        }
+        },
     ]
 });
