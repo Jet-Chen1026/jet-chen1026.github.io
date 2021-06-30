@@ -17,18 +17,18 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="#安装git（windows）###设置账户安装完git之后先设置自己的账户信息：">
+  <meta name="description" content="安装git（windows）设置账户安装完git之后先设置自己的账户信息：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="git的使用教程">
 <meta property="og:url" content="http://example.com/2021/06/23/git%E7%9A%84%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/index.html">
 <meta property="og:site_name" content="小陈不喝酒">
-<meta property="og:description" content="#安装git（windows）###设置账户安装完git之后先设置自己的账户信息：">
+<meta property="og:description" content="安装git（windows）设置账户安装完git之后先设置自己的账户信息：">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-06-23T02:24:38.000Z">
-<meta property="article:modified_time" content="2021-06-23T02:29:00.154Z">
+<meta property="article:modified_time" content="2021-06-24T06:33:12.360Z">
 <meta property="article:author" content="Jet Chen">
 <meta name="twitter:card" content="summary">
 
@@ -213,12 +213,32 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-06-23 10:24:38 / 修改时间：10:29:00" itemprop="dateCreated datePublished" datetime="2021-06-23T10:24:38+08:00">2021-06-23</time>
+              <time title="创建时间：2021-06-23 10:24:38" itemprop="dateCreated datePublished" datetime="2021-06-23T10:24:38+08:00">2021-06-23</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-06-24 14:33:12" itemprop="dateModified" datetime="2021-06-24T14:33:12+08:00">2021-06-24</time>
+              </span>
 
-          <br>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/06/23/git%E7%9A%84%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/06/23/git%E7%9A%84%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -243,20 +263,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>#安装git（windows）<br>###设置账户<br>安装完git之后先设置自己的账户信息：</p>
+        <h1 id="安装git（windows）"><a href="#安装git（windows）" class="headerlink" title="安装git（windows）"></a>安装git（windows）</h1><h3 id="设置账户"><a href="#设置账户" class="headerlink" title="设置账户"></a>设置账户</h3><p>安装完git之后先设置自己的账户信息：</p>
 <span id="more"></span>
 
 <figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">config</span> --<span class="keyword">global</span> user<span class="variable">.name</span> <span class="string">&quot;Your Name&quot;</span>  </span><br><span class="line"></span><br><span class="line">git <span class="keyword">config</span> --<span class="keyword">global</span> user<span class="variable">.email</span> <span class="string">&quot;email@example.com&quot;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>上面的name和email都是用于确定提交修改时候的签名<br>###初始化ssh私钥</p>
-<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -<span class="built_in">t</span> rsa -C <span class="string">&quot;这里换上你的邮箱&quot;</span></span><br></pre></td></tr></table></figure>
+<p>上面的name和email都是用于确定提交修改时候的签名  </p>
+<h3 id="初始化ssh私钥"><a href="#初始化ssh私钥" class="headerlink" title="初始化ssh私钥"></a>初始化ssh私钥</h3><figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -<span class="built_in">t</span> rsa -C <span class="string">&quot;这里换上你的邮箱&quot;</span></span><br></pre></td></tr></table></figure>
 <p>生成邮箱之后，把你的id_rsa.pub文件中的秘钥发给我，这一点很重要，决定你之后是否有权推送修改</p>
 <p>查看是有具有远程仓库的修改权：<br><code>git remote -v</code><br>如果有的话，可以看到一个push与一个fetch</p>
-<p>#git分支管理<br>可以把一条分支看做一条时间线，主分支名为master，所有的修改最终都应该提交到master上，但是为了避免失误，应该有一条辅助分支，比如说tmp分支，用于暂时保存团队的开发成果，当确定没有问题的时候再将tmp分支上的内容提交给master分支，同时每一个团队开发者应该有一条属于自己的分支，比如teamworker1，所有团队成员在自己的分支上修改项目，每次将修改之后将修改提交给tmp分支，当最后整个团队认为tmp分支的内容可以成为下一个release版本的时候，再将tmp分支的内容提交给master分支。这就是团队使用git的流程<br>###分支常用指令</p>
-<figure class="highlight q"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git branch <span class="built_in">dev</span>   创建分支  </span><br><span class="line">git checkout <span class="built_in">dev</span>   将开发的时间线转移到<span class="built_in">dev</span>分支上</span><br><span class="line">git merge <span class="built_in">dev</span>    将<span class="built_in">dev</span>分支的内容与当前分支合并</span><br><span class="line">git branch -d <span class="built_in">dev</span>    删除<span class="built_in">dev</span>分支</span><br><span class="line">git branch    查看分支信息（带*号的分支是当前分支）</span><br></pre></td></tr></table></figure>
+<h1 id="git分支管理"><a href="#git分支管理" class="headerlink" title="git分支管理"></a>git分支管理</h1><p>可以把一条分支看做一条时间线，主分支名为master，所有的修改最终都应该提交到master上，但是为了避免失误，应该有一条辅助分支，比如说tmp分支，用于暂时保存团队的开发成果，当确定没有问题的时候再将tmp分支上的内容提交给master分支，同时每一个团队开发者应该有一条属于自己的分支，比如teamworker1，所有团队成员在自己的分支上修改项目，每次将修改之后将修改提交给tmp分支，当最后整个团队认为tmp分支的内容可以成为下一个release版本的时候，再将tmp分支的内容提交给master分支。这就是团队使用git的流程</p>
+<h3 id="分支常用指令"><a href="#分支常用指令" class="headerlink" title="分支常用指令"></a>分支常用指令</h3><figure class="highlight q"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git branch <span class="built_in">dev</span>   创建分支  </span><br><span class="line">git checkout <span class="built_in">dev</span>   将开发的时间线转移到<span class="built_in">dev</span>分支上</span><br><span class="line">git merge <span class="built_in">dev</span>    将<span class="built_in">dev</span>分支的内容与当前分支合并</span><br><span class="line">git branch -d <span class="built_in">dev</span>    删除<span class="built_in">dev</span>分支</span><br><span class="line">git branch    查看分支信息（带*号的分支是当前分支）</span><br></pre></td></tr></table></figure>
 
 
-<p>#下载远程代码库</p>
-<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">clone</span> <span class="title">git</span>@<span class="string">&quot;仓库地址&quot;</span></span><br></pre></td></tr></table></figure>
+<h1 id="下载远程代码库"><a href="#下载远程代码库" class="headerlink" title="下载远程代码库"></a>下载远程代码库</h1><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">clone</span> <span class="title">git</span>@<span class="string">&quot;仓库地址&quot;</span></span><br></pre></td></tr></table></figure>
 <p>仓库地址由我提供给你们，只需要新建一个文件夹，然后再文件夹中打开gitbash，运行上面代码，就会自动下载远程仓库<br>下载远程代码库之后应该首先做这几件事：  </p>
 <ul>
 <li>查看所有分支，以及目前正处于哪一条分支：<code>git branch</code></li>
@@ -271,9 +290,10 @@ git checkout dev   将开发的时间线转移到dev分支上
 <ul>
 <li>开始修改你的代码</li>
 </ul>
-<p>#提交与更新<br>###本地<br>当你在本地修改了代码之后首先使用<code>git add filename</code>，将修改提交给缓存区，此时修改并没有完全提交给本地仓库，如果需要完全提交给本地仓库，还需要使用<code>git commit -m “本次修改的说明”</code>来将你提交给缓存区的修改提交给本地仓库</p>
-<p>当别人修改了代码，并提交到远程仓库的时候，你的本地仓库就与远程仓库的内容不一样了，这个时候要先在本地git库内执行：<br><code>git pull</code><br>将远程修改内容同步到本地<br>###远程<br>当你本地修改代码之后，<em><strong>并且已经使用git add与git commit上传到你本地版本库</strong></em>之后，使用：<br><code>git push origin 分支名</code><br>按理来说只需要先提交你自己的分支，如果你的分支叫dev，则：<br><code>git push origin dev</code> </p>
-<p>#版本冲突<br><em><strong>分支管理是git最难的部分，大家可以参考<a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/896043488029600/896954848507552">分支管理</a>。</strong></em></p>
+<h1 id="提交与更新"><a href="#提交与更新" class="headerlink" title="提交与更新"></a>提交与更新</h1><h3 id="本地"><a href="#本地" class="headerlink" title="本地"></a>本地</h3><p>当你在本地修改了代码之后首先使用<code>git add filename</code>，将修改提交给缓存区，此时修改并没有完全提交给本地仓库，如果需要完全提交给本地仓库，还需要使用<code>git commit -m “本次修改的说明”</code>来将你提交给缓存区的修改提交给本地仓库</p>
+<p>当别人修改了代码，并提交到远程仓库的时候，你的本地仓库就与远程仓库的内容不一样了，这个时候要先在本地git库内执行：<br><code>git pull</code><br>将远程修改内容同步到本地</p>
+<h3 id="远程"><a href="#远程" class="headerlink" title="远程"></a>远程</h3><p>当你本地修改代码之后，<em><strong>并且已经使用git add与git commit上传到你本地版本库</strong></em>之后，使用：<br><code>git push origin 分支名</code><br>按理来说只需要先提交你自己的分支，如果你的分支叫dev，则：<br><code>git push origin dev</code> </p>
+<h1 id="版本冲突"><a href="#版本冲突" class="headerlink" title="版本冲突"></a>版本冲突</h1><p><em><strong>分支管理是git最难的部分，大家可以参考<a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/896043488029600/896954848507552">分支管理</a>。</strong></em></p>
 <p>同时里面有关于git更加详细的使用！</p>
 
     </div>
@@ -306,6 +326,7 @@ git checkout dev   将开发的时间线转移到dev分支上
 
           </div>
           
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -352,6 +373,7 @@ git checkout dev   将开发的时间线转移到dev分支上
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85git%EF%BC%88windows%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">安装git（windows）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E8%B4%A6%E6%88%B7"><span class="nav-number">1.0.1.</span> <span class="nav-text">设置账户</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96ssh%E7%A7%81%E9%92%A5"><span class="nav-number">1.0.2.</span> <span class="nav-text">初始化ssh私钥</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">git分支管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%94%AF%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4"><span class="nav-number">2.0.1.</span> <span class="nav-text">分支常用指令</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E5%BA%93"><span class="nav-number">3.</span> <span class="nav-text">下载远程代码库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8F%90%E4%BA%A4%E4%B8%8E%E6%9B%B4%E6%96%B0"><span class="nav-number">4.</span> <span class="nav-text">提交与更新</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0"><span class="nav-number">4.0.1.</span> <span class="nav-text">本地</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9C%E7%A8%8B"><span class="nav-number">4.0.2.</span> <span class="nav-text">远程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%88%E6%9C%AC%E5%86%B2%E7%AA%81"><span class="nav-number">5.</span> <span class="nav-text">版本冲突</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -475,6 +497,35 @@ git checkout dev   将开发的时间线转移到dev分支上
   
 
   
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'El2gfAPUH0waROxCoYD8HzWj-gzGzoHsz',
+      appKey     : 'NUHfTgHstlin2AT1hiKptdrm',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '3' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
 
 </body>
 </html>
