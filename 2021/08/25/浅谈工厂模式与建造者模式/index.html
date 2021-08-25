@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近在项目代码中看到了需要类都是通过Builder类构造出来的，故补充了一下相关知识，在学习 构造者模式的过程中发现这个模式跟工厂模式很像，所以拿在一快学习了一下，总结出了这篇文章。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈工厂模式与建造者模式">
+<meta property="og:url" content="http://example.com/2021/08/25/%E6%B5%85%E8%B0%88%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E4%B8%8E%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:site_name" content="小陈不喝酒">
+<meta property="og:description" content="最近在项目代码中看到了需要类都是通过Builder类构造出来的，故补充了一下相关知识，在学习 构造者模式的过程中发现这个模式跟工厂模式很像，所以拿在一快学习了一下，总结出了这篇文章。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gttc5cvssqj60cl07pdge02.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gtte99q05pj60i80f5mxh02.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gttdp1b5mdj60xg094wg102.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gttecomu4zj60m805q3z302.jpg">
+<meta property="article:published_time" content="2021-08-25T11:14:38.000Z">
+<meta property="article:modified_time" content="2021-08-25T14:41:01.154Z">
+<meta property="article:author" content="Jet Chen">
+<meta property="article:tag" content="学习笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gttc5cvssqj60cl07pdge02.jpg">
+
+<link rel="canonical" href="http://example.com/2021/08/25/%E6%B5%85%E8%B0%88%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E4%B8%8E%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>浅谈工厂模式与建造者模式 | 小陈不喝酒</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">小陈不喝酒</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">争做新青年，不做lsp！</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/25/%E6%B5%85%E8%B0%88%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E4%B8%8E%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/touxiang.png">
+      <meta itemprop="name" content="Jet Chen">
+      <meta itemprop="description" content="不当咸鱼，不吃软饭，但希望有一个愿意开滴滴养我的npy。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小陈不喝酒">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          浅谈工厂模式与建造者模式
+        </h1>
+
+        <div class="post-meta">
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-08-25 19:14:38 / 修改时间：22:41:01" itemprop="dateCreated datePublished" datetime="2021-08-25T19:14:38+08:00">2021-08-25</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/08/25/%E6%B5%85%E8%B0%88%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E4%B8%8E%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/08/25/%E6%B5%85%E8%B0%88%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E4%B8%8E%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近在项目代码中看到了需要类都是通过Builder类构造出来的，故补充了一下相关知识，在学习 构造者模式的过程中发现这个模式跟工厂模式很像，所以拿在一快学习了一下，总结出了这篇文章。</p>
+<span id="more"></span>
+
+<h1 id="开闭原则"><a href="#开闭原则" class="headerlink" title="开闭原则"></a>开闭原则</h1><p>开闭原则是软件设计六大原则之一，最直接的定义就是：在软件设计中，应该让代码对后续的扩展开放，但是拒绝修改旧代码。扩展可以理解为新增功能，拒绝修改旧代码就是尽量不要改动已经写好了的业务代码。后续的工厂模式和构建者模式都可以实现这一原则。</p>
+<h1 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h1><p>在Java代码中，要新建一个对象，最简单的方法就是：<code>Object cloud = new Object</code>，使用new关键字新建一个对象，但是这种新建对象的方法属于硬编码，在一些大型项目中，如果每个对象都适用new的方式来创建的的话，可能会有成百上千个new对象的代码，如果业务代码需要改变，难道要一个一个去修改这几百上千个地方么？而工厂模式的提出解决了这一问题，使用工厂模式，就等于把对象的创建过程交给了工厂，你需要什么东西就直接去工厂下订单，如果后续要修改业务代码，那么只需要修改工厂类就可以了，而不需要去一个一个修改你使用了new的地方。</p>
+<h2 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a>简单工厂模式</h2><p>简单工厂模式又称静态工厂模式，简单来说就是把一类相同的产品，放在一个工厂下生产，比如说小米笔记本和苹果笔记本，都是笔记本，属于同一类产品，那么就可以设计一个电脑工厂，从电脑工厂中去获取这两款电脑产品。</p>
+<h3 id="UML图"><a href="#UML图" class="headerlink" title="UML图"></a>UML图</h3><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gttc5cvssqj60cl07pdge02.jpg"></p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p>首先定义一个电脑抽象类，或者借口，定义电脑的行为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Computer</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">setOperationSystem</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后定义具体的电脑品牌，比如说小米电脑和苹果电脑：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">MacComputer</span> <span class="keyword">extends</span> <span class="title">Computer</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    public void setOperationSystem() &#123;</span><br><span class="line">        <span class="type">System</span>.out.println(<span class="string">&quot;Mac笔记本安装Mac系统&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">MiComputer</span> <span class="keyword">extends</span> <span class="title">Computer</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    public void setOperationSystem() &#123;</span><br><span class="line">        <span class="type">System</span>.out.println(<span class="string">&quot;小米笔记本安装Win10系统&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后定义一个工厂类，工厂内中有一个静态生产方法，用于根据不同的条件获取不同的产品：</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleComputerFactory</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Computer makeComputer(<span class="keyword">String</span> brand) &#123;</span><br><span class="line">        Computer computer=<span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">switch</span> (brand) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&quot;mac&quot;</span>:<span class="type"></span></span><br><span class="line">                computer=<span class="keyword">new</span> <span class="type">MacComputer</span>();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&quot;mi&quot;</span>:<span class="type"></span></span><br><span class="line">                computer=<span class="keyword">new</span> <span class="type">MiComputer</span>();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:<span class="type"></span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> computer;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在业务代码中调用工厂类的静态方法获取相应的产品：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">void</span> <span class="function"><span class="title">main</span>(<span class="params"><span class="built_in">String</span>[] args</span>)</span> &#123;</span><br><span class="line">        Computer computer= SimpleComputerFactory.makeComputer(<span class="string">&quot;mi&quot;</span>);</span><br><span class="line">        computer.setOperationSystem();</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><p>简单工厂模式将创建对象的过程隐藏在了工厂内中，实现了对象的创建和使用的分离，降低了代码的耦合性，但是还是违背了开闭原则，试想现在又多了一个产品类，比如说荣耀电脑，这个时候就需要修改工厂类中的代码，违背了开闭原则中的拒绝修改旧代码的原则。</p>
+<h2 id="普通工厂模式"><a href="#普通工厂模式" class="headerlink" title="普通工厂模式"></a>普通工厂模式</h2><p>普通工厂模式是简单工厂模式的升级版，克服了简单工厂模式的缺点，与简单工厂模式的区别在于，普通工厂模式为每一种产品（注意区别于每一类产品）创建了一个工厂类，有多少种产品就有多少个工厂：苹果电脑工厂，小米电脑工厂，荣耀电脑工厂等。这样有一个好处就是，当新增一种产品的时候就不需要再去修改原有的工厂类的代码，而只需要去新增一种产品的工厂类即可。</p>
+<h3 id="UML图-1"><a href="#UML图-1" class="headerlink" title="UML图"></a>UML图</h3><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtte99q05pj60i80f5mxh02.jpg"></p>
+<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><p>首先定义一个产品抽象类，还是以电脑举例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Computer</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">setOperationSystem</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后定义不同的产品，比如说小米电脑，苹果电脑等：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">MacComputer</span> <span class="keyword">extends</span> <span class="title">Computer</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    public void setOperationSystem() &#123;</span><br><span class="line">        <span class="type">System</span>.out.println(<span class="string">&quot;Mac笔记本安装Mac系统&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">MiComputer</span> <span class="keyword">extends</span> <span class="title">Computer</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    public void setOperationSystem() &#123;</span><br><span class="line">        <span class="type">System</span>.out.println(<span class="string">&quot;小米笔记本安装Win10系统&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后定义一个工厂抽象类，规定了工厂类的具体行为（生产笔记本，获取产品对象）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ComputerFactory</span> </span>&#123;</span><br><span class="line">     <span class="function">Computer <span class="title">makeComputer</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MacComputerFactory</span> <span class="keyword">implements</span> <span class="title">ComputerFactory</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Computer <span class="title">makeComputer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MacComputer();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MiComputerFactory</span> <span class="keyword">implements</span> <span class="title">ComputerFactory</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Computer <span class="title">makeComputer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MiComputer();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在业务代码中，需要哪个产品，就用哪个产品的工厂类去下单（获取对象）：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String<span class="literal">[]</span> args) &#123;</span><br><span class="line">        <span class="comment">//生产Mac电脑</span></span><br><span class="line">        ComputerFactory macFactory=<span class="keyword">new</span> <span class="constructor">MacComputerFactory()</span>;</span><br><span class="line">        macFactory.make<span class="constructor">Computer()</span>.set<span class="constructor">OperationSystem()</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//生产小米电脑</span></span><br><span class="line">        ComputerFactory miFactory=<span class="keyword">new</span> <span class="constructor">MiComputerFactory()</span>;</span><br><span class="line">        miFactory.make<span class="constructor">Computer()</span>.set<span class="constructor">OperationSystem()</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="优缺点-1"><a href="#优缺点-1" class="headerlink" title="优缺点"></a>优缺点</h3><p>普通工厂模式克服了简单生产模式的弊端，完美的复合了代码设计的开闭原则，如果在后续的代码中需要增加产品，那么就只需要新建对应的产品类和工厂类就可以了，不需要对旧代码进行任何的修改。但是缺点是随着产品的增加，会造成工厂类的增加。</p>
+<h2 id="抽象工厂模式"><a href="#抽象工厂模式" class="headerlink" title="抽象工厂模式"></a>抽象工厂模式</h2><p>抽象工厂模式是工厂模式的再升级，普通工厂模式中，一种工厂只能生产一种产品，哪怕很多的产品具有相同的品牌，也必须为不同的产品新建不同的工厂类，比如说现在有两款产品，分别是苹果手表和苹果电脑，虽然这两款产品都是一家公司的，但是在普通工厂模式中我们还是必须为这两款产品分别建立两个不同的工厂，这明显加大了对类的管理难度。而抽象工厂模式很好的解决了这一个问题，在抽象工厂模式中，一个工厂会为同属于一个“品牌”的一类产品服务，比如苹果工厂可以生产苹果旗下的所有产品，小米工厂可以生产小米旗下的所有产品，这样就降低了工厂类的数量。</p>
+<h3 id="UML图-2"><a href="#UML图-2" class="headerlink" title="UML图"></a>UML图</h3><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gttdp1b5mdj60xg094wg102.jpg"></p>
+<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><p>首先还是定义一类抽象的产品基类，这里以电脑和手机为例：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//电脑接口</span></span><br><span class="line">public <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Computer</span> </span>&#123;</span><br><span class="line">    public <span class="keyword">abstract</span> void setOperationSystem();</span><br><span class="line">&#125;</span><br><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">MacComputer</span> <span class="keyword">extends</span> <span class="title">Computer</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    public void setOperationSystem() &#123;</span><br><span class="line">        <span class="type">System</span>.out.println(<span class="string">&quot;Mac笔记本安装Mac系统&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">MiComputer</span> <span class="keyword">extends</span> <span class="title">Computer</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    public void setOperationSystem() &#123;</span><br><span class="line">        <span class="type">System</span>.out.println(<span class="string">&quot;小米笔记本安装Win10系统&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//手机接口</span></span><br><span class="line">public <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">MobilePhoto</span> </span>&#123;</span><br><span class="line">    public <span class="keyword">abstract</span> void setOperationSystem();</span><br><span class="line">&#125;</span><br><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">IPhoto</span> <span class="keyword">extends</span> <span class="title">MobilePhoto</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    public void setOperationSystem() &#123;</span><br><span class="line">        <span class="type">System</span>.out.println(<span class="string">&quot;苹果手机安装IOS系统&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">MiPhoto</span> <span class="keyword">extends</span> <span class="title">MobilePhoto</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    public void setOperationSystem() &#123;</span><br><span class="line">        <span class="type">System</span>.out.println(<span class="string">&quot;小米手机安装Android系统&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后定义抽象的工厂类，注意这个抽象的工厂类定义了某一“品牌”下面的所有产品的生产方法，然后在根据这个工厂抽象类实现不同的工厂：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//抽象工厂接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">AbstractFactory</span> </span>&#123;</span><br><span class="line">     <span class="function">Computer <span class="title">makeComputer</span><span class="params">()</span></span>;</span><br><span class="line">     <span class="function">MobilePhoto <span class="title">makeMobilePhoto</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppleFactory</span> <span class="keyword">implements</span> <span class="title">AbstractFactory</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Computer <span class="title">makeComputer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MacComputer();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MobilePhoto <span class="title">makeMobilePhoto</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> IPhoto();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">XiaoMiFactory</span> <span class="keyword">implements</span> <span class="title">AbstractFactory</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Computer <span class="title">makeComputer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MiComputer();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MobilePhoto <span class="title">makeMobilePhoto</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MiPhoto();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在业务代码中，调用不同的工厂类就可以生产出某一“品牌”下的所有产品了，而不仅仅是一个工厂对应一个产品：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String<span class="literal">[]</span> args) &#123;</span><br><span class="line">        <span class="comment">//使用苹果工厂生产苹果公司的系列产品</span></span><br><span class="line">        AbstractFactory appleFactory=<span class="keyword">new</span> <span class="constructor">AppleFactory()</span>;</span><br><span class="line">        appleFactory.make<span class="constructor">Computer()</span>.set<span class="constructor">OperationSystem()</span>;</span><br><span class="line">        appleFactory.make<span class="constructor">MobilePhoto()</span>.set<span class="constructor">OperationSystem()</span>;</span><br><span class="line"></span><br><span class="line">       <span class="comment">//使用小米工厂生产小米公司的系列产品</span></span><br><span class="line">        AbstractFactory miFactory=<span class="keyword">new</span> XiaoMiFactory <span class="literal">()</span>;</span><br><span class="line">        miFactory.make<span class="constructor">Computer()</span>.set<span class="constructor">OperationSystem()</span>;</span><br><span class="line">        miFactory.make<span class="constructor">MobilePhoto()</span>.set<span class="constructor">OperationSystem()</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="优缺点-2"><a href="#优缺点-2" class="headerlink" title="优缺点"></a>优缺点</h3><p>抽象工厂模式大大的降低了工厂类的数量，是我们对代码的维护量变的更小了，但是还是有着一定的缺陷，如果一开始的抽象工厂类没有把所有的产品种类定义完全，那么后期需要新增产品的时候还是会修改旧代码，也就是还是有可能违背开闭原则，但是不管怎么说，这种模式可以使我们的代码修改量尽可能的小。</p>
+<h1 id="构建者模式"><a href="#构建者模式" class="headerlink" title="构建者模式"></a>构建者模式</h1><p>构建者模式也是为了改进直接new一个对象的方式，第一次遇见构建者模式是我最近在《第一行安卓代码》中看到的，代码如下：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gttecomu4zj60m805q3z302.jpg"></p>
+<p>我们可以看到，为了新建一个Notifacation对象，居然花费了这么多行代码，并且也不是仅仅通过new一个对象去实现的，这种创建对象的方法就是构建者模式。而这样做是为了什么呢？由于一个复杂类的创建，可能需要给构造函数传很多个参数进去，并且很多参数是可选的，在这种情况下如果一个一个去查的话很容易出错，并且代码看起来也不够直观，而构建者模式就等于是把目标对象的构造函数给隐藏了。你不需要知道创建这个对象需要传递多少参数，也不需要知道每个参数的位置，你只需要调用Builder类中的一系列<code>set()</code>方法把你想要传给对象的参数传送进去就可以了，这样书写出来的代码更好理解，并且也利于书写。</p>
+<h2 id="UML图-3"><a href="#UML图-3" class="headerlink" title="UML图"></a>UML图</h2><p>暂时不知道怎么画内部类的类图，先略一下。</p>
+<h2 id="代码-3"><a href="#代码-3" class="headerlink" title="代码"></a>代码</h2><p>我们假设以电脑对象来举例，电脑类的代码如下：</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Computer</span> &#123;</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">String</span> cpu;<span class="comment">//必须</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">String</span> ram;<span class="comment">//必须</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> usbCount;<span class="comment">//可选</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">String</span> keyboard;<span class="comment">//可选</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">String</span> display;<span class="comment">//可选</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>要想实现最简单的建造者模式，首先要在产品类中定义一个<code>private</code>的构造函数，这个构造函数的意义见代码（其实就是为了把获得的属性给产品对象），然后在对象的类中定义一个Builder类，这个Builder类拥有外层产品类相同的属性，在Builder类中实现每一个属性的<code>set()</code>方法，最后实现一个<code>builder</code>方法，将Builder类获得的所有属性传递给外层产品类，这样就实现了用构建者模式创建一个对象了。</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//完整设计代码</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Computer</span> &#123;</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">String</span> cpu;<span class="comment">//必须</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">String</span> ram;<span class="comment">//必须</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> usbCount;<span class="comment">//可选</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">String</span> keyboard;<span class="comment">//可选</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">String</span> display;<span class="comment">//可选</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Computer</span><span class="params">(Builder builder)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.cpu=builder.cpu;</span><br><span class="line">        <span class="keyword">this</span>.ram=builder.ram;</span><br><span class="line">        <span class="keyword">this</span>.usbCount=builder.usbCount;</span><br><span class="line">        <span class="keyword">this</span>.keyboard=builder.keyboard;</span><br><span class="line">        <span class="keyword">this</span>.display=builder.display;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//省略getter</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Builder</span>&#123;</span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">String</span> cpu;<span class="comment">//必须</span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">String</span> ram;<span class="comment">//必须</span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> usbCount;<span class="comment">//可选</span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">String</span> keyboard;<span class="comment">//可选</span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">String</span> display;<span class="comment">//可选</span></span><br><span class="line">       </span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Builder</span><span class="params">(<span class="keyword">String</span> cup,<span class="keyword">String</span> ram)</span></span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.cpu=cup;</span><br><span class="line">            <span class="keyword">this</span>.ram=ram;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setUsbCount</span><span class="params">(<span class="keyword">int</span> usbCount)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.usbCount = usbCount;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setKeyboard</span><span class="params">(<span class="keyword">String</span> keyboard)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.keyboard = keyboard;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setDisplay</span><span class="params">(<span class="keyword">String</span> display)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.display = display;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;        </span><br><span class="line">        <span class="function"><span class="keyword">public</span> Computer <span class="title">build</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Computer</span>(<span class="keyword">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在测试代码中，对于可选的参数，就可以使用多个<code>set()</code>方法去构建目标对象了：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Computer computer=<span class="keyword">new</span> Computer.<span class="constructor">Builder(<span class="string">&quot;因特尔&quot;</span>,<span class="string">&quot;三星&quot;</span>)</span></span><br><span class="line">        .set<span class="constructor">Display(<span class="string">&quot;三星24寸&quot;</span>)</span></span><br><span class="line">        .set<span class="constructor">Keyboard(<span class="string">&quot;罗技&quot;</span>)</span></span><br><span class="line">        .set<span class="constructor">UsbCount(2)</span></span><br><span class="line">        .build<span class="literal">()</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>对于工厂模式而言，是对Java代码中最原生的使用new关键字新建一个对象的方法做出改善，因为在实际的工程开发过程中，直接使用new方法新建对象不利于后期对业务代码的维护（谁愿意去一行行的修改以前的老代码呢。要是少了个字母出了bug就gg了）。</p>
+<p>而对于构建者模式而言，是让写代码的人可以以更优雅的一种姿态去构建对象，及时你不知道某个类有多少种构造方法，每个方法有多少个参数需要传递，你都可以通过<code>set()</code>和<code>builder</code>方法，很轻松的创建出来你想要的对象。</p>
+<p>那么问题来了，我有多久没亲我对象了呢：）</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag"># 学习笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/08/23/%E5%B8%AE%E5%8A%A9%E5%B0%8F%E4%BA%91%E5%BF%AB%E9%80%9F%E6%8F%90%E5%8D%87%E6%95%88%E7%8E%87%E4%B9%8B%E5%BF%AB%E6%8D%B7%E9%94%AE%E5%AE%9D%E5%85%B8/" rel="prev" title="最基础的Mac快捷键">
+      <i class="fa fa-chevron-left"></i> 最基础的Mac快捷键
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99"><span class="nav-number">1.</span> <span class="nav-text">开闭原则</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">工厂模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">简单工厂模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#UML%E5%9B%BE"><span class="nav-number">2.1.1.</span> <span class="nav-text">UML图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">2.1.2.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="nav-number">2.1.3.</span> <span class="nav-text">优缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%99%AE%E9%80%9A%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">普通工厂模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#UML%E5%9B%BE-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">UML图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9-1"><span class="nav-number">2.2.3.</span> <span class="nav-text">优缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.3.</span> <span class="nav-text">抽象工厂模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#UML%E5%9B%BE-2"><span class="nav-number">2.3.1.</span> <span class="nav-text">UML图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-2"><span class="nav-number">2.3.2.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9-2"><span class="nav-number">2.3.3.</span> <span class="nav-text">优缺点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">构建者模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#UML%E5%9B%BE-3"><span class="nav-number">3.1.</span> <span class="nav-text">UML图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-3"><span class="nav-number">3.2.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Jet Chen"
+      src="/images/touxiang.png">
+  <p class="site-author-name" itemprop="name">Jet Chen</p>
+  <div class="site-description" itemprop="description">不当咸鱼，不吃软饭，但希望有一个愿意开滴滴养我的npy。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:chenzhitong1026@gmail.com" title="E-Mail → mailto:chenzhitong1026@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+      <link rel="stylesheet" href="/dist/APlayer.min.css">
+      <div id="aplayer"></div>
+      <script type="text/javascript" src="/dist/APlayer.min.js"></script>
+      <script type="text/javascript" src="/dist/music.js"></script>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+    
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jet Chen</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  <!-- 加入APlayer音乐播放器 -->
+    <link rel="stylesheet" href="/dist/APlayer.min.css">
+    <div id="aplayer"></div>
+    <script type="text/javascript" src="/dist/APlayer.min.js"></script>
+    <script type="text/javascript" src="/dist/music.js"></script>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'El2gfAPUH0waROxCoYD8HzWj-gzGzoHsz',
+      appKey     : 'NUHfTgHstlin2AT1hiKptdrm',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '3' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
