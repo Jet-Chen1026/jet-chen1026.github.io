@@ -20,19 +20,19 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="最近在项目代码中看到了需要类都是通过Builder类构造出来的，故补充了一下相关知识，在学习 构造者模式的过程中发现这个模式跟工厂模式很像，所以拿在一快学习了一下，总结出了这篇文章。">
+  <meta name="description" content="最近在项目代码中看到了需要类都是通过Builder类构造出来的，故补充了一下相关知识，在学习 构造者模式的过程中发现这个模式跟工厂模式很像，所以拿在一块学习了一下，总结出了这篇文章。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="浅谈工厂模式与建造者模式">
 <meta property="og:url" content="http://example.com/2021/08/25/%E6%B5%85%E8%B0%88%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E4%B8%8E%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/index.html">
 <meta property="og:site_name" content="小陈不喝酒">
-<meta property="og:description" content="最近在项目代码中看到了需要类都是通过Builder类构造出来的，故补充了一下相关知识，在学习 构造者模式的过程中发现这个模式跟工厂模式很像，所以拿在一快学习了一下，总结出了这篇文章。">
+<meta property="og:description" content="最近在项目代码中看到了需要类都是通过Builder类构造出来的，故补充了一下相关知识，在学习 构造者模式的过程中发现这个模式跟工厂模式很像，所以拿在一块学习了一下，总结出了这篇文章。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gttc5cvssqj60cl07pdge02.jpg">
 <meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gtte99q05pj60i80f5mxh02.jpg">
 <meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gttdp1b5mdj60xg094wg102.jpg">
 <meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gttecomu4zj60m805q3z302.jpg">
 <meta property="article:published_time" content="2021-08-25T11:14:38.000Z">
-<meta property="article:modified_time" content="2021-08-25T14:41:01.154Z">
+<meta property="article:modified_time" content="2021-08-26T13:59:24.662Z">
 <meta property="article:author" content="Jet Chen">
 <meta property="article:tag" content="学习笔记">
 <meta name="twitter:card" content="summary">
@@ -219,10 +219,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-08-25 19:14:38 / 修改时间：22:41:01" itemprop="dateCreated datePublished" datetime="2021-08-25T19:14:38+08:00">2021-08-25</time>
+              <time title="创建时间：2021-08-25 19:14:38" itemprop="dateCreated datePublished" datetime="2021-08-25T19:14:38+08:00">2021-08-25</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-26 21:59:24" itemprop="dateModified" datetime="2021-08-26T21:59:24+08:00">2021-08-26</time>
+              </span>
 
           
   
@@ -263,11 +269,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>最近在项目代码中看到了需要类都是通过Builder类构造出来的，故补充了一下相关知识，在学习 构造者模式的过程中发现这个模式跟工厂模式很像，所以拿在一快学习了一下，总结出了这篇文章。</p>
+        <p>最近在项目代码中看到了需要类都是通过Builder类构造出来的，故补充了一下相关知识，在学习 构造者模式的过程中发现这个模式跟工厂模式很像，所以拿在一块学习了一下，总结出了这篇文章。</p>
 <span id="more"></span>
 
-<h1 id="开闭原则"><a href="#开闭原则" class="headerlink" title="开闭原则"></a>开闭原则</h1><p>开闭原则是软件设计六大原则之一，最直接的定义就是：在软件设计中，应该让代码对后续的扩展开放，但是拒绝修改旧代码。扩展可以理解为新增功能，拒绝修改旧代码就是尽量不要改动已经写好了的业务代码。后续的工厂模式和构建者模式都可以实现这一原则。</p>
-<h1 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h1><p>在Java代码中，要新建一个对象，最简单的方法就是：<code>Object cloud = new Object</code>，使用new关键字新建一个对象，但是这种新建对象的方法属于硬编码，在一些大型项目中，如果每个对象都适用new的方式来创建的的话，可能会有成百上千个new对象的代码，如果业务代码需要改变，难道要一个一个去修改这几百上千个地方么？而工厂模式的提出解决了这一问题，使用工厂模式，就等于把对象的创建过程交给了工厂，你需要什么东西就直接去工厂下订单，如果后续要修改业务代码，那么只需要修改工厂类就可以了，而不需要去一个一个修改你使用了new的地方。</p>
+<h1 id="开闭原则"><a href="#开闭原则" class="headerlink" title="开闭原则"></a>开闭原则</h1><p>开闭原则是软件设计六大原则之一，最直接的定义就是：在软件设计中，应该让代码对后续的扩展开放，但是拒绝修改旧代码。扩展可以理解为新增功能，拒绝修改旧代码就是尽量不要改动已经写好了的业务代码。后续的工厂模式可以实现这一原则。</p>
+<h1 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h1><p>在Java代码中，要新建一个对象，最简单的方法就是：<code>Object cloud = new Object</code>，使用new关键字新建一个对象，但是这种新建对象的方法属于硬编码，在一些大型项目中，如果每个对象都使用new的方式来创建的话，可能会有成百上千个new对象的代码，如果业务代码需要改变，难道要一个一个去修改这几百上千个地方么？而工厂模式的提出解决了这一问题，使用工厂模式，就等于把对象的创建过程交给了工厂，你需要什么东西就直接去工厂下订单，如果后续要修改业务代码，那么只需要修改工厂类就可以了，而不需要去一个一个修改你使用了new的地方。</p>
 <h2 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a>简单工厂模式</h2><p>简单工厂模式又称静态工厂模式，简单来说就是把一类相同的产品，放在一个工厂下生产，比如说小米笔记本和苹果笔记本，都是笔记本，属于同一类产品，那么就可以设计一个电脑工厂，从电脑工厂中去获取这两款电脑产品。</p>
 <h3 id="UML图"><a href="#UML图" class="headerlink" title="UML图"></a>UML图</h3><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gttc5cvssqj60cl07pdge02.jpg"></p>
 <h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p>首先定义一个电脑抽象类，或者借口，定义电脑的行为：</p>
@@ -314,7 +320,7 @@
 <h3 id="优缺点-2"><a href="#优缺点-2" class="headerlink" title="优缺点"></a>优缺点</h3><p>抽象工厂模式大大的降低了工厂类的数量，是我们对代码的维护量变的更小了，但是还是有着一定的缺陷，如果一开始的抽象工厂类没有把所有的产品种类定义完全，那么后期需要新增产品的时候还是会修改旧代码，也就是还是有可能违背开闭原则，但是不管怎么说，这种模式可以使我们的代码修改量尽可能的小。</p>
 <h1 id="构建者模式"><a href="#构建者模式" class="headerlink" title="构建者模式"></a>构建者模式</h1><p>构建者模式也是为了改进直接new一个对象的方式，第一次遇见构建者模式是我最近在《第一行安卓代码》中看到的，代码如下：</p>
 <p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gttecomu4zj60m805q3z302.jpg"></p>
-<p>我们可以看到，为了新建一个Notifacation对象，居然花费了这么多行代码，并且也不是仅仅通过new一个对象去实现的，这种创建对象的方法就是构建者模式。而这样做是为了什么呢？由于一个复杂类的创建，可能需要给构造函数传很多个参数进去，并且很多参数是可选的，在这种情况下如果一个一个去查的话很容易出错，并且代码看起来也不够直观，而构建者模式就等于是把目标对象的构造函数给隐藏了。你不需要知道创建这个对象需要传递多少参数，也不需要知道每个参数的位置，你只需要调用Builder类中的一系列<code>set()</code>方法把你想要传给对象的参数传送进去就可以了，这样书写出来的代码更好理解，并且也利于书写。</p>
+<p>我们可以看到，为了新建一个Notifacation对象，居然花费了这么多行代码，并且也不是仅仅通过new一个对象去实现的，这种创建对象的方法就是构建者模式。而这样做是为了什么呢？由于一个复杂类对象的创建，可能需要给构造函数传很多个参数进去，并且很多参数是可选的，在这种情况下如果一个一个去查的话很容易出错，并且代码看起来也不够直观，而构建者模式就等于是把目标对象的构造函数给隐藏了。你不需要知道创建这个对象需要传递多少参数，也不需要知道每个参数的位置，你只需要调用Builder类中的一系列<code>set()</code>方法把你想要传给对象的参数传送进去就可以了，这样书写出来的代码更好理解，并且也利于书写。</p>
 <h2 id="UML图-3"><a href="#UML图-3" class="headerlink" title="UML图"></a>UML图</h2><p>暂时不知道怎么画内部类的类图，先略一下。</p>
 <h2 id="代码-3"><a href="#代码-3" class="headerlink" title="代码"></a>代码</h2><p>我们假设以电脑对象来举例，电脑类的代码如下：</p>
 <figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Computer</span> &#123;</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">String</span> cpu;<span class="comment">//必须</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">String</span> ram;<span class="comment">//必须</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> usbCount;<span class="comment">//可选</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">String</span> keyboard;<span class="comment">//可选</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">String</span> display;<span class="comment">//可选</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
